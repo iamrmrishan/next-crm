@@ -1,10 +1,10 @@
 import { createClient } from '@/utils/supabase/server'
 import { ServerDatabaseManager } from '@/utils/supabase/server'
 import { Order } from '@/types/order-type'
-import {
-  OrdersAPIRequest,
-  OrdersAPIResponse,
-  ChartDataRequest,
+import { 
+  OrdersAPIRequest, 
+  OrdersAPIResponse, 
+  ChartDataRequest, 
   ChartDataResponse,
   ChartDataPoint,
   OrderFilters
@@ -22,7 +22,7 @@ export class OrderService {
   async getOrders(request: OrdersAPIRequest): Promise<OrdersAPIResponse> {
     // Generate cache key
     const cacheKey = this.cacheManager.generateKey(request as Record<string, unknown>)
-
+    
     // Check cache first
     const cachedResult = this.cacheManager.get<OrdersAPIResponse>(cacheKey)
     if (cachedResult) {
@@ -38,7 +38,7 @@ export class OrderService {
     // Validate and sanitize filters
     const sanitizedFilters = request.filters ? FilterEngine.sanitizeFilters(request.filters) : {}
     const validation = FilterEngine.validateFilters(sanitizedFilters)
-
+    
     if (!validation.isValid) {
       throw new Error(`Validation failed: ${validation.errors.join(', ')}`)
     }
@@ -46,38 +46,38 @@ export class OrderService {
     try {
       const result = await ServerDatabaseManager.executeWithRetry(async () => {
         const supabase = await createClient()
-
+        
         // Build base query
         let query = supabase.from('orders').select('*', { count: 'exact' })
-
+        
         // Apply filters
         if (sanitizedFilters) {
           query = FilterEngine.buildSupabaseQuery(query, sanitizedFilters)
         }
-
+        
         // Apply sorting
         if (request.sortBy) {
-          query = query.order(request.sortBy, {
-            ascending: request.sortOrder !== 'desc'
+          query = query.order(request.sortBy, { 
+            ascending: request.sortOrder !== 'desc' 
           })
         } else {
           // Default sort by date descending
           query = query.order('date', { ascending: false })
         }
-
+        
         // Apply pagination
         const page = request.pagination?.page || 1
         const limit = request.pagination?.limit || 50
         const offset = (page - 1) * limit
-
+        
         query = query.range(offset, offset + limit - 1)
-
+        
         const { data, error, count } = await query
-
+        
         if (error) {
           throw new Error(`Database query failed: ${error.message}`)
         }
-
+        
         return { data: data || [], count: count || 0 }
       }, 'getOrders')
 
@@ -112,7 +112,7 @@ export class OrderService {
   async getChartData(request: ChartDataRequest): Promise<ChartDataResponse> {
     // Generate cache key for chart data
     const cacheKey = this.cacheManager.generateKey({ ...request, type: 'chart' } as Record<string, unknown>)
-
+    
     // Check cache first
     const cachedResult = this.cacheManager.get<ChartDataResponse>(cacheKey)
     if (cachedResult) {
@@ -128,7 +128,7 @@ export class OrderService {
     // Validate and sanitize filters
     const sanitizedFilters = request.filters ? FilterEngine.sanitizeFilters(request.filters) : {}
     const validation = FilterEngine.validateFilters(sanitizedFilters)
-
+    
     if (!validation.isValid) {
       throw new Error(`Validation failed: ${validation.errors.join(', ')}`)
     }
@@ -136,21 +136,21 @@ export class OrderService {
     try {
       const result = await ServerDatabaseManager.executeWithRetry(async () => {
         const supabase = await createClient()
-
+        
         // Build base query
         let query = supabase.from('orders').select('*')
-
+        
         // Apply filters
         if (sanitizedFilters) {
           query = FilterEngine.buildSupabaseQuery(query, sanitizedFilters)
         }
-
+        
         const { data, error } = await query
-
+        
         if (error) {
           throw new Error(`Database query failed: ${error.message}`)
         }
-
+        
         return data || []
       }, 'getChartData')
 
@@ -187,20 +187,20 @@ export class OrderService {
     try {
       return await ServerDatabaseManager.executeWithRetry(async () => {
         const supabase = await createClient()
-
+        
         const { data, error } = await supabase
           .from('orders')
           .insert([order])
           .select()
           .single()
-
+        
         if (error) {
           throw new Error(`Failed to create order: ${error.message}`)
         }
-
+        
         // Invalidate cache
         this.cacheManager.invalidate('orders')
-
+        
         return data
       }, 'createOrder')
     } catch (error) {
@@ -213,21 +213,21 @@ export class OrderService {
     try {
       return await ServerDatabaseManager.executeWithRetry(async () => {
         const supabase = await createClient()
-
+        
         const { data, error } = await supabase
           .from('orders')
           .update(updates)
           .eq('id', id)
           .select()
           .single()
-
+        
         if (error) {
           throw new Error(`Failed to update order: ${error.message}`)
         }
-
+        
         // Invalidate cache
         this.cacheManager.invalidate('orders')
-
+        
         return data
       }, 'updateOrder')
     } catch (error) {
@@ -240,16 +240,16 @@ export class OrderService {
     try {
       await ServerDatabaseManager.executeWithRetry(async () => {
         const supabase = await createClient()
-
+        
         const { error } = await supabase
           .from('orders')
           .delete()
           .eq('id', id)
-
+        
         if (error) {
           throw new Error(`Failed to delete order: ${error.message}`)
         }
-
+        
         // Invalidate cache
         this.cacheManager.invalidate('orders')
       }, 'deleteOrder')
@@ -263,20 +263,20 @@ export class OrderService {
     try {
       return await ServerDatabaseManager.executeWithRetry(async () => {
         const supabase = await createClient()
-
+        
         const { data, error } = await supabase
           .from('orders')
           .select('*')
           .eq('id', id)
           .single()
-
+        
         if (error) {
           if (error.code === 'PGRST116') {
             return null // No rows found
           }
           throw new Error(`Failed to fetch order: ${error.message}`)
         }
-
+        
         return data
       }, 'getOrderById')
     } catch (error) {
@@ -286,8 +286,8 @@ export class OrderService {
   }
 
   private processChartData(
-    orders: Order[],
-    type: ChartDataRequest['type'],
+    orders: Order[], 
+    type: ChartDataRequest['type'], 
     groupBy?: ChartDataRequest['groupBy']
   ): ChartDataPoint[] {
     switch (type) {
@@ -312,7 +312,7 @@ export class OrderService {
     }, {} as Record<string, number>)
 
     const total = orders.length
-
+    
     return Object.entries(counts).map(([label, value]) => ({
       label,
       value,
@@ -324,7 +324,7 @@ export class OrderService {
     const groups = orders.reduce((acc, order) => {
       const date = new Date(order.date)
       let key: string
-
+      
       switch (groupBy) {
         case 'day':
           key = date.toISOString().split('T')[0]
@@ -340,7 +340,7 @@ export class OrderService {
         default:
           key = date.toISOString().split('T')[0]
       }
-
+      
       acc[key] = (acc[key] || 0) + 1
       return acc
     }, {} as Record<string, number>)
