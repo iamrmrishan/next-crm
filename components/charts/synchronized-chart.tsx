@@ -89,7 +89,7 @@ export function SynchronizedChart({ config }: SynchronizedChartProps) {
   const convertFiltersToAPI = React.useCallback(() => {
     return {
       categories: filters.categories,
-      sources: filters.sources as any[],
+      sources: filters.sources as ('Online' | 'In-Store' | 'App' | 'Phone')[],
       geo: filters.geo,
       dateRange: filters.dateRange.start && filters.dateRange.end ? {
         start: filters.dateRange.start,
@@ -119,7 +119,7 @@ export function SynchronizedChart({ config }: SynchronizedChartProps) {
   )
 
   // Handle interactive filtering when clicking on chart segments - memoized for performance
-  const handleChartClick = React.useCallback((data: any, index: number) => {
+  const handleChartClick = React.useCallback((data: { category: string; count: number }, index: number) => {
     if (!enableInteractiveFiltering) return
     
     const clickedCategory = chartData[index]?.category
@@ -266,7 +266,7 @@ export function SynchronizedChart({ config }: SynchronizedChartProps) {
                     dataKey="count" 
                     fill="var(--chart-1)"
                     style={{ cursor: enableInteractiveFiltering ? 'pointer' : 'default' }}
-                    onClick={enableInteractiveFiltering ? (data, index) => {
+                    onClick={enableInteractiveFiltering ? (data) => {
                       // Find the index in chartData based on the clicked data
                       const clickedIndex = chartData.findIndex(item => item.category === data.category)
                       if (clickedIndex !== -1) {

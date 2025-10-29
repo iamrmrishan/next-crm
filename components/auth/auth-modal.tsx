@@ -107,7 +107,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
       onSuccess();
       router.push("/dashboard");
       router.refresh();
-    } catch (err) {
+    } catch {
       setError("Login failed. Please try again.");
       setIsLoading(false);
     }
@@ -165,7 +165,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
       setSignupName("");
       setSignupEmail("");
       setSignupPassword("");
-    } catch (err) {
+    } catch {
       setError("Sign up failed. Please try again.");
       setIsLoading(false);
     }
@@ -200,7 +200,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
       setSuccessMessage("Password reset link sent! Please check your email.");
       setIsLoading(false);
       setForgotPasswordEmail("");
-    } catch (err) {
+    } catch {
       setError("Failed to send reset email. Please try again.");
       setIsLoading(false);
     }
@@ -224,7 +224,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
           </Button>
           <h3 className="text-lg font-semibold">Reset your password</h3>
           <p className="text-sm text-muted-foreground">
-            Enter your email address and we'll send you a link to reset your password.
+            Enter your email address and we&apos;ll send you a link to reset your password.
           </p>
         </div>
         

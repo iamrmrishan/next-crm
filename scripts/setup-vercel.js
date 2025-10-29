@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const { execSync } = require('child_process');
-const fs = require('fs');
+import { execSync } from 'child_process';
+import fs from 'fs';
 
 console.log('🚀 Setting up Vercel integration...\n');
 
@@ -10,7 +10,7 @@ try {
   try {
     execSync('vercel --version', { stdio: 'ignore' });
     console.log('✅ Vercel CLI is installed');
-  } catch (error) {
+  } catch {
     console.log('❌ Vercel CLI not found. Installing...');
     execSync('npm install -g vercel', { stdio: 'inherit' });
     console.log('✅ Vercel CLI installed');
@@ -26,7 +26,7 @@ try {
 
   // Get project info
   console.log('\n📋 Getting project information...');
-  const projectInfo = execSync('vercel project ls', { encoding: 'utf8' });
+  execSync('vercel project ls', { encoding: 'utf8' });
   
   console.log('\n✅ Setup complete!');
   console.log('\n📝 Next steps:');

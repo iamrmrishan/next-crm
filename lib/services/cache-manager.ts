@@ -1,4 +1,4 @@
-interface CacheEntry<T = any> {
+interface CacheEntry<T = unknown> {
   data: T
   timestamp: number
   ttl: number
@@ -54,7 +54,7 @@ export class CacheManager {
     }
     
     this.metrics.hits++
-    return entry.data
+    return entry.data as T
   }
 
   set<T>(key: string, value: T, ttl?: number): void {
@@ -92,7 +92,7 @@ export class CacheManager {
     this.updateCacheSize()
   }
 
-  generateKey(request: any): string {
+  generateKey(request: Record<string, unknown>): string {
     // Create a deterministic key from the request object
     const sortedRequest = this.sortObjectKeys(request)
     const keyString = JSON.stringify(sortedRequest)
@@ -197,7 +197,7 @@ export class CacheManager {
     }
     
     return {
-      data: entry.data,
+      data: entry.data as T,
       metadata: {
         timestamp: entry.timestamp,
         ttl: entry.ttl,
@@ -237,7 +237,7 @@ export class CacheManager {
     this.metrics.cacheSize = this.memoryCache.size
   }
 
-  private sortObjectKeys(obj: any): any {
+  private sortObjectKeys(obj: unknown): unknown {
     if (obj === null || typeof obj !== 'object') {
       return obj
     }
@@ -247,10 +247,10 @@ export class CacheManager {
     }
     
     const sortedKeys = Object.keys(obj).sort()
-    const sortedObj: any = {}
+    const sortedObj: Record<string, unknown> = {}
     
     for (const key of sortedKeys) {
-      sortedObj[key] = this.sortObjectKeys(obj[key])
+      sortedObj[key] = this.sortObjectKeys((obj as Record<string, unknown>)[key])
     }
     
     return sortedObj

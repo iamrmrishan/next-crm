@@ -46,7 +46,7 @@ export interface ChartDataPoint {
   label: string
   value: number
   percentage?: number
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 export interface ChartDataRequest {
@@ -81,7 +81,7 @@ export enum ErrorCode {
 export interface APIError {
   code: ErrorCode
   message: string
-  details?: any
+  details?: Record<string, unknown>
   timestamp: string
   requestId: string
 }

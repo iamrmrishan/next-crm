@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
 
     const sources = searchParams.get('sources')
     if (sources) {
-      chartRequest.filters!.sources = sources.split(',').filter(Boolean) as any[]
+      chartRequest.filters!.sources = sources.split(',').filter(Boolean) as ('Online' | 'In-Store' | 'App' | 'Phone')[]
     }
 
     const startDate = searchParams.get('startDate')

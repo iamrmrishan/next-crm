@@ -45,12 +45,7 @@ import { formatDate } from "@/lib/utils"
 import { useChartDataAPI } from "@/hooks/use-orders-api"
 import { OrderFilters } from "@/lib/types/api"
 
-// Generic type for data items
-type DataItem = {
-  id: string
-  date: string
-  [key: string]: any
-}
+// Removed unused type
 
 // Configuration type
 type FilterableChartConfig = {
@@ -79,7 +74,6 @@ export function FilterableChart({ config }: FilterableChartProps) {
     groupByKey,
     filterByKey,
     filterOptions = [],
-    dateKey = "date",
     defaultStartDate,
     defaultEndDate,
     chartConfig,
@@ -92,7 +86,6 @@ export function FilterableChart({ config }: FilterableChartProps) {
     chartData: apiChartData, 
     isLoading: chartLoading, 
     error: chartError, 
-    metadata,
     fetchChartData 
   } = useChartDataAPI()
 
@@ -128,7 +121,7 @@ export function FilterableChart({ config }: FilterableChartProps) {
       if (filterByKey === 'category') {
         filters.categories = [selectedFilter]
       } else if (filterByKey === 'source') {
-        filters.sources = [selectedFilter] as any[]
+        filters.sources = [selectedFilter] as ('Online' | 'In-Store' | 'App' | 'Phone')[]
       } else if (filterByKey === 'geo') {
         filters.geo = [selectedFilter]
       }

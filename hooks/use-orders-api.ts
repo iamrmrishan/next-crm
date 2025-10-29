@@ -108,7 +108,7 @@ export const useOrdersAPI = (initialFilters?: OrderFilters): UseOrdersAPIReturn 
     // Initial fetch
     useEffect(() => {
         fetchOrders(initialFilters || {})
-    }, []) // Only run on mount
+    }, [fetchOrders, initialFilters]) // Include dependencies
 
     return {
         orders,
@@ -121,7 +121,7 @@ export const useOrdersAPI = (initialFilters?: OrderFilters): UseOrdersAPIReturn 
 }
 
 export interface UseChartDataAPIReturn {
-    chartData: any[]
+    chartData: { label: string; value: number }[]
     isLoading: boolean
     error: string | null
     metadata: {
@@ -134,7 +134,7 @@ export interface UseChartDataAPIReturn {
 }
 
 export const useChartDataAPI = (): UseChartDataAPIReturn => {
-    const [chartData, setChartData] = useState<any[]>([])
+    const [chartData, setChartData] = useState<{ label: string; value: number }[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [metadata, setMetadata] = useState({

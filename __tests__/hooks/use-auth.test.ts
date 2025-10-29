@@ -27,7 +27,7 @@ describe('useAuth', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(createClient).mockReturnValue(mockSupabaseClient as any)
+    vi.mocked(createClient).mockReturnValue(mockSupabaseClient as unknown as ReturnType<typeof createClient>)
   })
 
   it('should initialize with loading state and null user', () => {
@@ -70,7 +70,7 @@ describe('useAuth', () => {
   })
 
   it('should handle auth state changes through subscription', async () => {
-    let authStateChangeCallback: (event: string, session: any) => void
+    let authStateChangeCallback: ((event: string, session: { user: User } | null) => void) | undefined
 
     // Setup initial state with no user
     mockSupabaseClient.auth.getUser.mockResolvedValue({
@@ -96,7 +96,7 @@ describe('useAuth', () => {
     expect(result.current.user).toBe(null)
 
     // Simulate auth state change with user login
-    authStateChangeCallback('SIGNED_IN', { user: mockUser })
+    authStateChangeCallback?.('SIGNED_IN', { user: mockUser })
 
     await waitFor(() => {
       expect(result.current.user).toEqual(mockUser)
@@ -106,7 +106,7 @@ describe('useAuth', () => {
   })
 
   it('should handle auth state changes with null session (logout)', async () => {
-    let authStateChangeCallback: (event: string, session: any) => void
+    let authStateChangeCallback: ((event: string, session: { user: User } | null) => void) | undefined
 
     // Setup initial state with a user
     mockSupabaseClient.auth.getUser.mockResolvedValue({
@@ -131,7 +131,7 @@ describe('useAuth', () => {
     expect(result.current.user).toEqual(mockUser)
 
     // Simulate logout (null session)
-    authStateChangeCallback('SIGNED_OUT', null)
+    authStateChangeCallback?.('SIGNED_OUT', null)
 
     await waitFor(() => {
       expect(result.current.user).toBe(null)

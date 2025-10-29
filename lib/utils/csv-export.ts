@@ -11,7 +11,7 @@ export interface CSVExportOptions {
 /**
  * Converts an array of objects to CSV format
  */
-export function arrayToCSV<T extends Record<string, any>>(
+export function arrayToCSV<T extends Record<string, unknown>>(
   data: T[],
   options: CSVExportOptions = {}
 ): string {
@@ -44,7 +44,7 @@ export function arrayToCSV<T extends Record<string, any>>(
 /**
  * Downloads data as CSV file
  */
-export function downloadCSV<T extends Record<string, any>>(
+export function downloadCSV<T extends Record<string, unknown>>(
   data: T[],
   options: CSVExportOptions = {}
 ): void {
@@ -81,7 +81,7 @@ export function downloadCSV<T extends Record<string, any>>(
 /**
  * Formats order data for CSV export with proper headers
  */
-export function formatOrdersForCSV(orders: any[]): any[] {
+export function formatOrdersForCSV(orders: { id: string; customer: string; category: string; date: string; source: string; geo: string }[]): Record<string, string>[] {
   return orders.map(order => ({
     'Order ID': order.id,
     'Customer': order.customer,

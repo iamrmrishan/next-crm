@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     try {
       const { error } = await supabase.auth.verifyOtp({
-        type: type as any,
+        type: type as 'recovery' | 'signup' | 'invite' | 'magiclink' | 'email_change',
         token_hash,
       })
 

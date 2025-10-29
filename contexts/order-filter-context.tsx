@@ -73,7 +73,7 @@ export const OrderFilterProvider: React.FC<OrderFilterProviderProps> = ({
   const convertFiltersToAPI = useCallback((filters: typeof filterState.filters): OrderFilters => {
     return {
       categories: filters.categories,
-      sources: filters.sources as any[],
+      sources: filters.sources as ('Online' | 'In-Store' | 'App' | 'Phone')[],
       geo: filters.geo,
       dateRange: filters.dateRange.start && filters.dateRange.end ? {
         start: filters.dateRange.start,
@@ -86,7 +86,7 @@ export const OrderFilterProvider: React.FC<OrderFilterProviderProps> = ({
   const loadAllRecords = useCallback(async () => {
     const apiFilters = convertFiltersToAPI(filterState.filters)
     await applyFiltersToAPI(apiFilters, 1000) // Load up to 1000 records
-  }, [filterState.filters, convertFiltersToAPI, applyFiltersToAPI])
+  }, [convertFiltersToAPI, applyFiltersToAPI, filterState.filters])
 
   // Apply filters when filter state changes (debounced)
   useEffect(() => {

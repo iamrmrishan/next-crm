@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChevronDown, X, Download, Filter, ChevronUp, Calendar as CalendarIcon, Tag, MapPin, Globe, Search } from "lucide-react"
+import { ChevronDown, X, Download, Filter, Calendar as CalendarIcon, Tag, MapPin, Globe, Search } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import type { DateRange } from "react-day-picker"
@@ -93,8 +93,8 @@ export function FilteredDataTable<TData, TValue>({
         if (!localSearchTerm) return filteredData
 
         const searchTerm = localSearchTerm.toLowerCase()
-        return filteredData.filter((item: any) => {
-            const value = item[searchColumn]?.toString().toLowerCase() || ""
+        return filteredData.filter((item: Order) => {
+            const value = (item[searchColumn as keyof Order] as string)?.toString().toLowerCase() || ""
             return value.includes(searchTerm)
         })
     }, [filteredData, localSearchTerm, searchColumn])

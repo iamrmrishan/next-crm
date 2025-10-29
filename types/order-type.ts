@@ -1,4 +1,4 @@
-import { ColumnDef } from "@tanstack/react-table";
+// Removed unused import
 
 export type Order = {
     id: string;

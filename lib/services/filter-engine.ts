@@ -1,10 +1,10 @@
 import { OrderFilters } from '@/lib/types/api'
 
 export class FilterEngine {
-  static buildSupabaseQuery(
-    query: any,
+  static buildSupabaseQuery<T extends { in: (column: string, values: string[]) => T; gte: (column: string, value: string) => T; lte: (column: string, value: string) => T }>(
+    query: T,
     filters: OrderFilters
-  ): any {
+  ): T {
     let filteredQuery = query
 
     // Filter by categories
