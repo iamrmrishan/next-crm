@@ -36,8 +36,9 @@ jobs:
         
       - name: Check coverage thresholds
         run: |
-          if [ -f coverage/coverage-final.json ]; then
+          if [ -f coverage/coverage-summary.json ]; then
             echo "Coverage report generated successfully"
+            echo "Coverage summary available at coverage/coverage-summary.json"
           else
             echo "Coverage report not found"
             exit 1
@@ -54,18 +55,18 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            if (fs.existsSync('coverage/coverage-final.json')) {
-              const coverage = JSON.parse(fs.readFileSync('coverage/coverage-final.json', 'utf8'));
+            if (fs.existsSync('coverage/coverage-summary.json')) {
+              const coverage = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
               const total = coverage.total;
               
               const comment = `## 📊 Test Coverage Report
               
-              | Metric | Coverage |
-              |--------|----------|
-              | Lines | ${total.lines.pct}% |
-              | Functions | ${total.functions.pct}% |
-              | Branches | ${total.branches.pct}% |
-              | Statements | ${total.statements.pct}% |
+              | Metric | Coverage | Details |
+              |--------|----------|---------|
+              | Lines | ${total.lines.pct}% | ${total.lines.covered}/${total.lines.total} |
+              | Functions | ${total.functions.pct}% | ${total.functions.covered}/${total.functions.total} |
+              | Branches | ${total.branches.pct}% | ${total.branches.covered}/${total.branches.total} |
+              | Statements | ${total.statements.pct}% | ${total.statements.covered}/${total.statements.total} |
               
               ✅ All tests passed and coverage thresholds met!`;
               
